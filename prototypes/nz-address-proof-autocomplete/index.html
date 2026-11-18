@@ -567,23 +567,29 @@ body.is-embed .lab {
 .proof-trigger__desc { font-size:12px; line-height:16px; color:var(--text-second); }
 .proof-trigger__arrow { flex:0 0 auto; }
 
-/* 方案二：地址字段联想复用地址证明的浮层承载方式，内容沿用方案一搜索逻辑。 */
+/* 方案二：地址字段联想底部抽屉。
+   外壳与原流程的选项弹层一致，保留地址填写所需的返回导航。 */
 .addrpage {
-  z-index:46; padding:0; justify-content:flex-end; background:rgba(16,18,28,.48);
+  z-index:46; padding:0; justify-content:flex-end; background:rgba(0,0,0,.45);
   transform:none; opacity:0; pointer-events:none; transition:opacity var(--d-fast) var(--e-std);
 }
 .addrpage.is-open { transform:none; opacity:1; pointer-events:auto; }
 .addrpage .statusbar { display:none; }
 .addrpage__nav {
-  flex:0 0 56px; height:56px; padding:0 15px; background:#fff; border-radius:12px 12px 0 0;
+  flex:0 0 72px; height:72px; display:flex; flex-direction:column; align-items:stretch; justify-content:flex-start;
+  padding:8px 15px 0; background:#fff; border-radius:16px 16px 0 0;
   transform:translateY(24px); transition:transform var(--d-sheet) var(--e-sheet);
 }
+.addrpage__handle { width:35px; height:4px; flex:0 0 auto; margin:0 auto 12px; border-radius:2px; background:#E0E0E0; }
+.addrpage__nav .navbar__left { min-height:40px; }
+.addrpage__nav .navbar__brand { font-size:20px; line-height:23px; font-weight:500; }
 .addrpage__body {
-  /* 标题栏 56px + 内容区共同构成屏幕高度的 85%。 */
-  flex:0 0 calc(85% - 56px); max-height:calc(85% - 56px); padding:12px 15px 24px; background:#fff;
+  /* 标题栏、内容区和 Home Indicator 共同占屏幕高度的 85%。 */
+  flex:0 0 calc(85% - 96px); max-height:calc(85% - 96px); padding:12px 15px 16px; background:#fff;
   overflow-y:auto; transform:translateY(24px); transition:transform var(--d-sheet) var(--e-sheet);
 }
-.addrpage.is-open .addrpage__nav, .addrpage.is-open .addrpage__body { transform:translateY(0); }
+.addrpage__home { width:139px; height:5px; flex:0 0 auto; margin:6px auto 8px; border-radius:3px; background:#000; transform:translateY(24px); transition:transform var(--d-sheet) var(--e-sheet); }
+.addrpage.is-open .addrpage__nav, .addrpage.is-open .addrpage__body, .addrpage.is-open .addrpage__home { transform:translateY(0); }
 .phone.is-addrpage .keyboard { z-index:60; }
 
 /* 地址联想面板 */
@@ -1101,6 +1107,7 @@ body.is-embed .lab {
             </span>
           </header>
           <nav class="navbar addrpage__nav">
+            <div class="addrpage__handle" aria-hidden="true"></div>
             <span class="navbar__left">
               <button class="icon-btn" id="addrPageBack" aria-label="Back">
                 <svg width="11" height="18" viewBox="0 0 11 18" fill="none"><path d="M9.5 1.5 2 9l7.5 7.5" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1111,6 +1118,7 @@ body.is-embed .lab {
           <main class="content addrpage__body" id="addrPageBody">
             <div class="form" id="addrPageForm"><!-- JS 注入地址字段 --></div>
           </main>
+          <div class="addrpage__home" aria-hidden="true"></div>
         </section>
 
         <!-- TBKeyboard · 字母键盘 375×314 -->
