@@ -61,10 +61,10 @@
     }
     input::placeholder { color:var(--muted); opacity:1; }
     .field--phone { gap:12px; }
-    .country-code { display:flex; align-items:center; gap:8px; flex:0 0 auto; color:var(--ink); font-size:16px; line-height:20px; font-weight:500; }
+    .country-code { display:flex; align-items:center; gap:8px; flex:0 0 auto; padding:0; border:0; background:transparent; color:var(--ink); font:500 16px/20px inherit; cursor:pointer; }
     .country-code svg { color:#9aa0aa; }
     .field__divider { width:1px; height:18px; flex:0 0 auto; background:var(--line); }
-    .field--select { color:var(--muted); overflow:hidden; }
+    .field--select { color:var(--muted); overflow:hidden; font-family:inherit; text-align:left; cursor:pointer; }
     .field--select span { overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
     footer { padding:12px 15px 28px; display:flex; gap:12px; }
     .button {
@@ -74,6 +74,21 @@
     .button--previous { width:132px; }
     .button--continue { flex:1; border-color:var(--yellow); background:var(--yellow); color:var(--ink); }
     .home { position:absolute; left:50%; bottom:8px; width:139px; height:5px; border-radius:3px; background:#000; transform:translateX(-50%); }
+    .overlay { position:absolute; inset:0; z-index:10; display:flex; align-items:flex-end; background:rgba(0,0,0,.45); opacity:0; visibility:hidden; transition:opacity .18s ease; }
+    .overlay.open { opacity:1; visibility:visible; }
+    .sheet { width:100%; max-height:90%; overflow:auto; padding:8px 15px; border-radius:16px 16px 0 0; background:#fff; transform:translateY(100%); transition:transform .36s cubic-bezier(.32,.72,0,1); }
+    .overlay.open .sheet { transform:translateY(0); }
+    .sheet__handle { width:35px; height:4px; margin:0 auto; border-radius:2px; background:#e0e0e0; }
+    .sheet h2 { margin:24px 0 0; font-size:20px; line-height:23px; font-weight:500; }
+    .sheet p { margin:6px 0 0; color:var(--muted); font-size:14px; line-height:20px; }
+    .upload-box { width:100%; margin-top:20px; padding:24px 16px; border:1.5px dashed var(--line); border-radius:8px; background:#fafbfc; color:var(--ink); font:inherit; text-align:center; cursor:pointer; }
+    .upload-box strong,.upload-box span { display:block; }.upload-box strong { font-size:14px; }.upload-box span { margin-top:5px; color:var(--muted); font-size:12px; }
+    .proof-result { display:none; margin-top:20px; padding:16px; border-radius:8px; background:#f8f9fb; }.proof-result small,.proof-result strong,.proof-result span { display:block; }.proof-result small,.proof-result span { color:var(--muted); }.proof-result strong { margin-top:4px; font-size:16px; }.proof-result span { margin-top:4px; font-size:13px; }
+    .proof-actions { display:none; gap:8px; margin-top:20px; }.proof-actions button { height:44px; border-radius:8px; font:600 14px/20px inherit; cursor:pointer; }.proof-actions .outline { width:120px; border:1px solid var(--line); background:#fff; }.proof-actions .apply { flex:1; border:0; background:var(--yellow); }
+    .proof-sheet.ready .upload-box { display:none; }.proof-sheet.ready .proof-result,.proof-sheet.ready .proof-actions { display:block; }.proof-sheet.ready .proof-actions { display:flex; }
+    .address-sheet { min-height:42%; }.address-sheet .field { margin-top:12px; }.address-sheet .input-label { position:absolute; left:16px; top:50%; color:var(--muted); pointer-events:none; transform:translateY(-50%); }.address-sheet .field input:not(:placeholder-shown) + .input-label { opacity:0; }
+    .suggestions { display:none; margin-top:8px; }.suggestions.show { display:block; }.suggestion { width:100%; padding:13px 0; border:0; border-top:1px solid rgba(0,0,0,.06); background:#fff; color:var(--ink); font:inherit; text-align:left; cursor:pointer; }.suggestion b,.suggestion span { display:block; }.suggestion b { font-size:14px; }.suggestion span { margin-top:3px; color:var(--muted); font-size:12px; }
+    .choice { width:100%; display:flex; align-items:center; justify-content:space-between; padding:15px 0; border:0; border-top:1px solid rgba(0,0,0,.06); background:#fff; color:var(--ink); font:16px/20px inherit; text-align:left; cursor:pointer; }.choice:first-of-type { margin-top:16px; }.choice b { opacity:0; }.choice.active b { opacity:1; }.pickable { cursor:pointer; }
     @media (max-width:375px) {
       body { display:block; background:#fff; }
       .phone { width:100%; min-height:100dvh; border-radius:0; box-shadow:none; }
@@ -100,21 +115,39 @@
     <div class="progress" aria-hidden="true"><span class="progress__track"><span class="progress__fill"></span></span></div>
     <main>
       <h1>Address Information</h1>
-      <button class="proof-card" type="button">
+      <button class="proof-card" id="proofCard" type="button">
         <span class="proof-card__copy"><span class="proof-card__title">Use proof of address</span><span class="proof-card__desc">Upload a document to fill in your address</span></span>
         <svg class="proof-card__arrow" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="m6.8 3.5 5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <form>
         <label class="field"><input type="email" placeholder="Email" aria-label="Email"></label>
-        <label class="field field--phone"><span class="country-code">+86 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="m4 5.5 3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="field__divider"></span><input type="tel" placeholder="Phone Number" aria-label="Phone Number"></label>
+        <label class="field field--phone"><button class="country-code" id="countryCode" type="button">+86 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="m4 5.5 3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span class="field__divider"></span><input type="tel" placeholder="Phone Number" aria-label="Phone Number"></label>
         <label class="field"><input inputmode="numeric" placeholder="ID Number" aria-label="ID Number"></label>
-        <div class="field field--select" role="button" tabindex="0"><span>Reason for different phone and residence regions</span></div>
+        <button class="field field--select" id="reason" type="button"><span>Reason for different phone and residence regions</span></button>
         <label class="field"><input inputmode="numeric" placeholder="Post Code" aria-label="Post Code"></label>
-        <label class="field"><input placeholder="Permanent Residence Address" aria-label="Permanent Residence Address"></label>
+        <label class="field"><input id="address" placeholder="Permanent Residence Address" aria-label="Permanent Residence Address"></label>
       </form>
     </main>
     <footer><button type="button" class="button button--previous">Previous</button><button type="button" class="button button--continue">Continue</button></footer>
     <div class="home" aria-hidden="true"></div>
+    <section class="overlay" id="proofOverlay"><div class="sheet proof-sheet"><div class="sheet__handle"></div><h2>Proof of address</h2><p>Upload a document and we’ll find the address for you.</p><button class="upload-box" id="proofUpload" type="button"><strong>Upload proof of address</strong><span>Bank statement, utility bill or government letter</span></button><div class="proof-result"><small>Address found</small><strong>21 Queen Street, Auckland CBD</strong><span>Auckland 1010 · New Zealand</span></div><div class="proof-actions"><button class="outline" id="searchManual" type="button">Search manually</button><button class="apply" id="applyAddress" type="button">Use this address</button></div></div></section>
+    <section class="overlay" id="addressOverlay"><div class="sheet address-sheet"><div class="sheet__handle"></div><h2>Residential address</h2><label class="field"><input id="addressSearch" placeholder=" " autocomplete="off"><span class="input-label">Permanent Residence Address</span></label><div class="suggestions" id="suggestions"><button class="suggestion" data-address="21 Queen Street, Auckland CBD" type="button"><b>21 Queen Street, Auckland CBD</b><span>Auckland 1010 · New Zealand</span></button><button class="suggestion" data-address="21 Queen Street, Onehunga" type="button"><b>21 Queen Street, Onehunga</b><span>Auckland 1061 · New Zealand</span></button></div></div></section>
+    <section class="overlay" id="choiceOverlay"><div class="sheet"><div class="sheet__handle"></div><h2 id="choiceTitle">Select</h2><div id="choiceList"></div></div></section>
   </section>
+  <script>
+    const $=s=>document.querySelector(s),address=$('#address'),addressOverlay=$('#addressOverlay'),addressSearch=$('#addressSearch');
+    const open=el=>el.classList.add('open'),close=el=>el.classList.remove('open');
+    document.querySelectorAll('.overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)close(el)}));
+    $('#proofCard').onclick=()=>open($('#proofOverlay'));
+    $('#proofUpload').onclick=()=>$('.proof-sheet').classList.add('ready');
+    $('#applyAddress').onclick=()=>{address.value='21 Queen Street, Auckland CBD, Auckland 1010';close($('#proofOverlay'))};
+    $('#searchManual').onclick=()=>{close($('#proofOverlay'));setTimeout(()=>{open(addressOverlay);addressSearch.focus()},160)};
+    address.onfocus=()=>{addressSearch.value=address.value;open(addressOverlay);setTimeout(()=>addressSearch.focus(),0)};
+    addressSearch.oninput=()=>$('#suggestions').classList.toggle('show',addressSearch.value.trim().length>0);
+    $('#suggestions').onclick=e=>{const row=e.target.closest('.suggestion');if(!row)return;address.value=row.dataset.address;close(addressOverlay)};
+    function chooser(title,items,apply){$('#choiceTitle').textContent=title;$('#choiceList').innerHTML=items.map(x=>`<button class="choice" type="button" data-value="${x}"><span>${x}</span><b>✓</b></button>`).join('');open($('#choiceOverlay'));$('#choiceList').onclick=e=>{const row=e.target.closest('.choice');if(!row)return;apply(row.dataset.value);close($('#choiceOverlay'))}}
+    $('#countryCode').onclick=()=>chooser('Country / Region',['+86','+852','+886','+65','+1','+64'],v=>{$('#countryCode').childNodes[0].nodeValue=v+' '});
+    $('#reason').onclick=()=>chooser('Reason for different phone and residence regions',['Family Reason','Work Reason','Study Reason','Travel Reason','Other'],v=>$('#reason span').textContent=v);
+  </script>
 </body>
 </html>
