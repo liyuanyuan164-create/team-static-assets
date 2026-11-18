@@ -583,6 +583,7 @@ body.is-embed .lab {
 .addrpage__handle { width:35px; height:4px; flex:0 0 auto; margin:0 auto 12px; border-radius:2px; background:#E0E0E0; }
 .addrpage__nav .navbar__left { min-height:40px; }
 .addrpage__nav .navbar__brand { font-size:20px; line-height:23px; font-weight:500; }
+.addrpage__nav .navbar__left { gap:0; }
 .addrpage__body {
   /* 标题栏、内容区和 Home Indicator 共同占屏幕高度的 85%。 */
   flex:0 0 calc(85% - 96px); max-height:calc(85% - 96px); padding:12px 15px 16px; background:#fff;
@@ -591,6 +592,16 @@ body.is-embed .lab {
 .addrpage__home { width:139px; height:5px; flex:0 0 auto; margin:6px auto 8px; border-radius:3px; background:#000; transform:translateY(24px); transition:transform var(--d-sheet) var(--e-sheet); }
 .addrpage.is-open .addrpage__nav, .addrpage.is-open .addrpage__body, .addrpage.is-open .addrpage__home { transform:translateY(0); }
 .phone.is-addrpage .keyboard { z-index:60; }
+
+/* 地址抽屉内是普通输入框：标签停留在框内；有值后作为普通 placeholder 隐藏，不参与浮动标签动效。 */
+.addrpage__body .field__label,
+.addrpage__body .field:focus-within .field__label,
+.addrpage__body .field__input:not(:placeholder-shown) ~ .field__label,
+.addrpage__body .field.is-float .field__label {
+  transform:translateY(-50%) scale(1);
+}
+.addrpage__body .field__input:not(:placeholder-shown) ~ .field__label,
+.addrpage__body .field.is-float .field__label { opacity:0; }
 
 /* 地址联想面板 */
 .addr-suggest {
@@ -1109,9 +1120,6 @@ body.is-embed .lab {
           <nav class="navbar addrpage__nav">
             <div class="addrpage__handle" aria-hidden="true"></div>
             <span class="navbar__left">
-              <button class="icon-btn" id="addrPageBack" aria-label="Back">
-                <svg width="11" height="18" viewBox="0 0 11 18" fill="none"><path d="M9.5 1.5 2 9l7.5 7.5" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </button>
               <span class="navbar__brand">Residential address</span>
             </span>
           </nav>
@@ -1920,7 +1928,7 @@ body.is-embed .lab {
     var body = document.getElementById('addrPageBody');
     var form = document.getElementById('addrPageForm');
     var back = document.getElementById('addrPageBack');
-    if (!page || !body || !form || !back) return;
+    if (!page || !body || !form) return;
     // 保持同一字段节点的稳定引用；无论它当前在主表单还是搜索页，都能正确搬运。
     var paddrRow = document.querySelector('[data-row="paddr"]');
 
@@ -1972,7 +1980,7 @@ body.is-embed .lab {
       }, ms(260));
     }
 
-    back.addEventListener('click', close);
+    if (back) back.addEventListener('click', close);
     page.addEventListener('click', function (e) {
       if (e.target === page) close();
     });
