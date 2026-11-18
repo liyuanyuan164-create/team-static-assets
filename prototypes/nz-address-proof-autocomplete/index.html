@@ -531,13 +531,12 @@ body.is-embed .lab {
   animation:spin calc(700ms * var(--t)) linear infinite;
 }
 
-/* 方案二：地址证明解析结果浮层
-   与开户流程的底部选择弹层统一：45% 蒙层、16px 顶部圆角、拖拽条、底部 Home Indicator。 */
-.proof-sheet { position:absolute; inset:0; z-index:45; display:flex; align-items:flex-end; background:rgba(0,0,0,.45); }
+/* 方案二：地址证明解析结果浮层 */
+.proof-sheet { position:absolute; inset:0; z-index:45; display:flex; align-items:flex-end; background:rgba(16,18,28,.48); }
 .proof-sheet[hidden] { display:none; }
-.proof-sheet__panel { width:100%; max-height:90%; display:flex; flex-direction:column; overflow-y:auto; padding:8px 15px 8px; border-radius:16px 16px 0 0; background:#fff; animation:idupSheetIn var(--d-sheet) var(--e-sheet) both; }
-.proof-sheet__handle { width:35px; height:4px; flex:0 0 auto; margin:0 auto; border-radius:2px; background:#E0E0E0; }
-.proof-sheet__title { margin-top:24px; font-size:20px; line-height:23px; font-weight:500; color:var(--text-primary); }
+.proof-sheet__panel { width:100%; padding:8px 15px 20px; border-radius:12px 12px 0 0; background:#fff; animation:idupSheetIn var(--d-sheet) var(--e-sheet) both; }
+.proof-sheet__handle { width:36px; height:4px; margin:0 auto 16px; border-radius:99px; background:var(--field-border); }
+.proof-sheet__title { font-size:18px; line-height:24px; font-weight:700; }
 .proof-sheet__desc { margin-top:6px; font-size:14px; line-height:20px; color:var(--text-second); }
 .proof-upload { display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:20px; padding:24px 16px; border:1.5px dashed var(--field-border); border-radius:var(--radius); background:#FAFBFC; cursor:pointer; }
 .proof-upload__icon { width:40px; height:40px; border-radius:50%; background:var(--brand-yellow); display:flex; align-items:center; justify-content:center; }
@@ -557,51 +556,25 @@ body.is-embed .lab {
 .proof-sheet.is-ready .proof-actions { display:flex; }
 .proof-actions .btn { height:44px; border-radius:8px; font-weight:600; }
 .proof-actions .btn--outline { flex:0 0 120px; }
-.proof-sheet__home { width:139px; height:5px; flex:0 0 auto; margin:16px auto 0; border-radius:3px; background:#000; }
 
-/* 地址信息页的入口：让用户可主动唤起地址证明弹层。 */
-.proof-trigger { width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px; margin:-6px 0 18px; padding:12px; border:1px solid var(--field-border); border-radius:8px; background:#fff; color:var(--text-primary); text-align:left; cursor:pointer; }
-.proof-trigger:active { background:#FAFBFC; }
-.proof-trigger__copy { display:flex; flex-direction:column; gap:3px; }
-.proof-trigger__title { font-size:14px; line-height:20px; font-weight:500; }
-.proof-trigger__desc { font-size:12px; line-height:16px; color:var(--text-second); }
-.proof-trigger__arrow { flex:0 0 auto; }
-
-/* 方案二：地址字段联想底部抽屉。
-   外壳与原流程的选项弹层一致，保留地址填写所需的返回导航。 */
+/* 方案二：地址字段联想复用地址证明的浮层承载方式，内容沿用方案一搜索逻辑。 */
 .addrpage {
-  z-index:46; padding:0; justify-content:flex-end; background:rgba(0,0,0,.45);
+  z-index:46; padding:0; justify-content:flex-end; background:rgba(16,18,28,.48);
   transform:none; opacity:0; pointer-events:none; transition:opacity var(--d-fast) var(--e-std);
 }
 .addrpage.is-open { transform:none; opacity:1; pointer-events:auto; }
 .addrpage .statusbar { display:none; }
 .addrpage__nav {
-  flex:0 0 72px; height:72px; display:flex; flex-direction:column; align-items:stretch; justify-content:flex-start;
-  padding:8px 15px 0; background:#fff; border-radius:16px 16px 0 0;
+  flex:0 0 56px; height:56px; padding:0 15px; background:#fff; border-radius:12px 12px 0 0;
   transform:translateY(24px); transition:transform var(--d-sheet) var(--e-sheet);
 }
-.addrpage__handle { width:35px; height:4px; flex:0 0 auto; margin:0 auto 12px; border-radius:2px; background:#E0E0E0; }
-.addrpage__nav .navbar__left { min-height:40px; }
-.addrpage__nav .navbar__brand { font-size:20px; line-height:23px; font-weight:500; }
-.addrpage__nav .navbar__left { gap:0; }
 .addrpage__body {
-  /* 标题栏、内容区和 Home Indicator 共同占屏幕高度的 85%。 */
-  flex:0 0 calc(85% - 96px); max-height:calc(85% - 96px); padding:12px 15px 16px; background:#fff;
+  /* 标题栏 56px + 内容区共同构成屏幕高度的 85%。 */
+  flex:0 0 calc(85% - 56px); max-height:calc(85% - 56px); padding:12px 15px 24px; background:#fff;
   overflow-y:auto; transform:translateY(24px); transition:transform var(--d-sheet) var(--e-sheet);
 }
-.addrpage__home { width:139px; height:5px; flex:0 0 auto; margin:6px auto 8px; border-radius:3px; background:#000; transform:translateY(24px); transition:transform var(--d-sheet) var(--e-sheet); }
-.addrpage.is-open .addrpage__nav, .addrpage.is-open .addrpage__body, .addrpage.is-open .addrpage__home { transform:translateY(0); }
+.addrpage.is-open .addrpage__nav, .addrpage.is-open .addrpage__body { transform:translateY(0); }
 .phone.is-addrpage .keyboard { z-index:60; }
-
-/* 地址抽屉内是普通输入框：标签停留在框内；有值后作为普通 placeholder 隐藏，不参与浮动标签动效。 */
-.addrpage__body .field__label,
-.addrpage__body .field:focus-within .field__label,
-.addrpage__body .field__input:not(:placeholder-shown) ~ .field__label,
-.addrpage__body .field.is-float .field__label {
-  transform:translateY(-50%) scale(1);
-}
-.addrpage__body .field__input:not(:placeholder-shown) ~ .field__label,
-.addrpage__body .field.is-float .field__label { opacity:0; }
 
 /* 地址联想面板 */
 .addr-suggest {
@@ -1019,13 +992,6 @@ body.is-embed .lab {
               <div class="title-block">
                 <h1 class="title">Address Information</h1>
               </div>
-              <button type="button" class="proof-trigger" id="proofTrigger">
-                <span class="proof-trigger__copy">
-                  <span class="proof-trigger__title">Use proof of address</span>
-                  <span class="proof-trigger__desc">Upload a document to fill in your address</span>
-                </span>
-                <svg class="proof-trigger__arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="#62657A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </button>
               <div class="form" id="formB"></div>
             </main>
             <footer class="footer">
@@ -1057,7 +1023,6 @@ body.is-embed .lab {
                 <button type="button" class="btn btn--outline" id="proofSearch">Search manually</button>
                 <button type="button" class="btn btn--primary" id="proofApply">Use this address</button>
               </div>
-              <div class="proof-sheet__home" aria-hidden="true"></div>
             </div>
           </section>
 
@@ -1118,15 +1083,16 @@ body.is-embed .lab {
             </span>
           </header>
           <nav class="navbar addrpage__nav">
-            <div class="addrpage__handle" aria-hidden="true"></div>
             <span class="navbar__left">
+              <button class="icon-btn" id="addrPageBack" aria-label="Back">
+                <svg width="11" height="18" viewBox="0 0 11 18" fill="none"><path d="M9.5 1.5 2 9l7.5 7.5" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
               <span class="navbar__brand">Residential address</span>
             </span>
           </nav>
           <main class="content addrpage__body" id="addrPageBody">
             <div class="form" id="addrPageForm"><!-- JS 注入地址字段 --></div>
           </main>
-          <div class="addrpage__home" aria-hidden="true"></div>
         </section>
 
         <!-- TBKeyboard · 字母键盘 375×314 -->
@@ -1928,7 +1894,7 @@ body.is-embed .lab {
     var body = document.getElementById('addrPageBody');
     var form = document.getElementById('addrPageForm');
     var back = document.getElementById('addrPageBack');
-    if (!page || !body || !form) return;
+    if (!page || !body || !form || !back) return;
     // 保持同一字段节点的稳定引用；无论它当前在主表单还是搜索页，都能正确搬运。
     var paddrRow = document.querySelector('[data-row="paddr"]');
 
@@ -1980,7 +1946,7 @@ body.is-embed .lab {
       }, ms(260));
     }
 
-    if (back) back.addEventListener('click', close);
+    back.addEventListener('click', close);
     page.addEventListener('click', function (e) {
       if (e.target === page) close();
     });
