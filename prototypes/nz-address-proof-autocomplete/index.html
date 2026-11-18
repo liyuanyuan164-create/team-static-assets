@@ -559,6 +559,14 @@ body.is-embed .lab {
 .proof-actions .btn--outline { flex:0 0 120px; }
 .proof-sheet__home { width:139px; height:5px; flex:0 0 auto; margin:16px auto 0; border-radius:3px; background:#000; }
 
+/* 地址信息页的入口：让用户可主动唤起地址证明弹层。 */
+.proof-trigger { width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px; margin:-6px 0 18px; padding:12px; border:1px solid var(--field-border); border-radius:8px; background:#fff; color:var(--text-primary); text-align:left; cursor:pointer; }
+.proof-trigger:active { background:#FAFBFC; }
+.proof-trigger__copy { display:flex; flex-direction:column; gap:3px; }
+.proof-trigger__title { font-size:14px; line-height:20px; font-weight:500; }
+.proof-trigger__desc { font-size:12px; line-height:16px; color:var(--text-second); }
+.proof-trigger__arrow { flex:0 0 auto; }
+
 /* 方案二：地址字段联想复用地址证明的浮层承载方式，内容沿用方案一搜索逻辑。 */
 .addrpage {
   z-index:46; padding:0; justify-content:flex-end; background:rgba(16,18,28,.48);
@@ -994,6 +1002,13 @@ body.is-embed .lab {
               <div class="title-block">
                 <h1 class="title">Address Information</h1>
               </div>
+              <button type="button" class="proof-trigger" id="proofTrigger">
+                <span class="proof-trigger__copy">
+                  <span class="proof-trigger__title">Use proof of address</span>
+                  <span class="proof-trigger__desc">Upload a document to fill in your address</span>
+                </span>
+                <svg class="proof-trigger__arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="#62657A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
               <div class="form" id="formB"></div>
             </main>
             <footer class="footer">
